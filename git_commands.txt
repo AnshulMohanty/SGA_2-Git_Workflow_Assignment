@@ -1,0 +1,153 @@
+git_commands.txt
+Anshul Mohanty (2024eb02191)
+Repo: https://github.com/AnshulMohanty/SGA_2-Git_Workflow_Assignment
+
+Every Git command I used for this assignment, in the order I used it,
+with a short note on what it does.
+
+
+[Step 1] Setting up the local repository
+
+pwd
+  -> prints the folder I am in (SGA_2), to confirm the location.
+
+ls -la
+  -> lists all files, including hidden ones. There is no .git folder yet.
+
+git init -b main
+  -> turns the folder into a Git repository; "main" is the first branch.
+
+git config user.name "Anshul Mohanty"
+git config user.email "anshul.24bcs10191@sst.scaler.com"
+  -> saves my name and email (only for this repo); they go into every commit.
+
+git config --local --list | grep user
+  -> checks that the name and email were saved.
+
+git status
+  -> shows the branch and the file states. Both pages are untracked here.
+
+
+[Step 2] Commits, branching and merging
+
+git add index.html about.html
+  -> puts both files in the staging area for the next commit.
+
+git commit -m "add homepage and about page"
+  -> first commit, which saves the starting version of the project.
+
+git status --short
+  -> short status; "M about.html" means about.html was modified.
+
+git diff
+  -> shows the exact lines I changed in about.html (skills list).
+
+git commit -am "update about page with skills list"
+  -> -a stages modified tracked files, -m gives the message. Second commit.
+
+git branch feature
+  -> creates a new branch called feature (I'm still on main).
+
+git branch
+  -> lists branches; * shows the current one.
+
+git checkout feature
+  -> moves me to the feature branch.
+
+git diff --stat
+  -> summary of the change made on feature (index.html, +5 lines).
+
+git add index.html
+git commit -m "add projects section to homepage"
+  -> commits the projects section on the feature branch only.
+
+git log --oneline
+  -> one line per commit; shows the new commit on feature.
+
+git checkout main
+  -> goes back to the main branch.
+
+git merge --no-ff feature -m "merge feature branch (projects section)"
+  -> merges feature into main. --no-ff always makes a merge commit,
+     so the branch can be seen in the history.
+
+git log --oneline --graph --all
+  -> history of all branches drawn as a graph (shows the merge).
+
+git log --stat
+  -> full history with author, date, and the files each commit changed.
+
+
+[Step 3] .gitignore
+
+cat .gitignore
+  -> shows my two rules: *.log (all log files) and drafts/ (a folder).
+
+echo "server started on port 8080" > server.log
+mkdir drafts && echo "finish contact page" > drafts/todo.txt
+  -> make a log file and a drafts folder to test the rules (shell commands).
+
+git add -A
+  -> stages everything. Ignored files are skipped.
+
+git status
+  -> only .gitignore is staged; server.log and drafts/ are not.
+
+git status --ignored
+  -> also lists ignored files, which proves both rules work.
+
+git commit -m "add .gitignore (log files, drafts folder)"
+  -> saves the .gitignore file in the repo.
+
+
+[Step 4] Undoing a commit
+
+git commit -am "add under-construction banner to about page"
+  -> the extra commit that I undo next.
+
+git log --oneline -4
+  -> the last 4 commits, before the undo.
+
+grep -n "under construction" about.html
+  -> shell command; shows the banner line is in the file.
+
+git revert --no-edit HEAD
+  -> undoes the last commit by adding a new commit with the opposite
+     change. Nothing is deleted from history, so it is safe after a push.
+     --no-edit keeps the default message.
+
+git log --oneline -4
+  -> after the undo: a new "Revert ..." commit sits on top.
+
+git status
+  -> working tree is clean after the revert.
+
+git show --stat --oneline HEAD
+  -> details of the revert commit: one line removed from about.html.
+
+
+[Step 5] GitHub
+
+git add git_commands.txt
+git commit -m "add git_commands.txt"
+  -> adds this file to the repo.
+
+git remote add origin https://github.com/AnshulMohanty/SGA_2-Git_Workflow_Assignment.git
+  -> links my local repo to the GitHub repo under the name origin.
+
+git remote -v
+  -> shows the fetch and push URL of origin.
+
+git push --force -u origin main
+  -> uploads main and its full history to GitHub. -u sets origin/main as
+     the upstream. I used --force because I had pushed a first attempt to
+     this repo earlier, and this replaces it with the final history.
+
+git push --force origin feature
+  -> uploads the feature branch too, so it is visible on GitHub.
+
+git branch -a
+  -> local branches plus remote ones (remotes/origin/...).
+
+git log --oneline --graph --all --decorate
+  -> final graph; main/feature point to the same commits as origin.
